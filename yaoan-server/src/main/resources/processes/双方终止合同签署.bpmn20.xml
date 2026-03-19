@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.8.0">
+  <process id="ecms_contract_terminate_both" name="双方终止合同签署" isExecutable="true">
+    <startEvent id="startEvent1" flowable:formFieldValidation="true"></startEvent>
+    <userTask id="sid-8D176DB7-947E-4C53-B4BE-3C1CCBCA4335" name="签署方" flowable:assignee="assign1" flowable:formFieldValidation="true">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <endEvent id="sid-8086783B-2CC7-470D-A549-296CA5865258"></endEvent>
+    <userTask id="sid-14C0B69C-3CEB-4DFA-B095-EB28F4B077D6" name="发起方" flowable:assignee="assgin0" flowable:formFieldValidation="true">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-CCAD4751-2976-40E8-8956-DC55A880379D" name="发送" sourceRef="sid-14C0B69C-3CEB-4DFA-B095-EB28F4B077D6" targetRef="sid-8D176DB7-947E-4C53-B4BE-3C1CCBCA4335"></sequenceFlow>
+    <sequenceFlow id="sid-747D3C99-1639-4094-8EEB-920E06D2B9FC" name="拒签" sourceRef="sid-8D176DB7-947E-4C53-B4BE-3C1CCBCA4335" targetRef="sid-14C0B69C-3CEB-4DFA-B095-EB28F4B077D6">
+      <documentation>拒签</documentation>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passVal=='reject'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-A8058533-A0C1-4AC9-A9E0-0247FC7E8294" name="通过" sourceRef="sid-8D176DB7-947E-4C53-B4BE-3C1CCBCA4335" targetRef="sid-8086783B-2CC7-470D-A549-296CA5865258">
+      <extensionElements>
+        <flowable:executionListener event="end" class="com.yaoan.module.bpm.service.task.listener.TerminateFinishExecuteListener"></flowable:executionListener>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passVal=='confirm'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-933BE26F-19E8-4D39-8457-B27F2D3D95CD" sourceRef="startEvent1" targetRef="sid-8D176DB7-947E-4C53-B4BE-3C1CCBCA4335">
+      <extensionElements>
+        <flowable:executionListener event="start" class="com.yaoan.module.bpm.service.task.listener.TerminateStartExecuteListener"></flowable:executionListener>
+      </extensionElements>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ecms_contract_terminate_both">
+    <bpmndi:BPMNPlane bpmnElement="ecms_contract_terminate_both" id="BPMNPlane_ecms_contract_terminate_both">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-8D176DB7-947E-4C53-B4BE-3C1CCBCA4335" id="BPMNShape_sid-8D176DB7-947E-4C53-B4BE-3C1CCBCA4335">
+        <omgdc:Bounds height="80.0" width="100.0" x="254.99998860061203" y="137.99999794363978"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-8086783B-2CC7-470D-A549-296CA5865258" id="BPMNShape_sid-8086783B-2CC7-470D-A549-296CA5865258">
+        <omgdc:Bounds height="28.0" width="28.0" x="479.99999284744274" y="163.9999954998494"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-14C0B69C-3CEB-4DFA-B095-EB28F4B077D6" id="BPMNShape_sid-14C0B69C-3CEB-4DFA-B095-EB28F4B077D6">
+        <omgdc:Bounds height="80.0" width="100.0" x="254.99999240040796" y="329.99999508261686"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-747D3C99-1639-4094-8EEB-920E06D2B9FC" id="BPMNEdge_sid-747D3C99-1639-4094-8EEB-920E06D2B9FC" flowable:sourceDockerX="25.0" flowable:sourceDockerY="79.0" flowable:targetDockerX="25.0" flowable:targetDockerY="1.0">
+        <omgdi:waypoint x="279.999988632277" y="217.9499979436398"></omgdi:waypoint>
+        <omgdi:waypoint x="279.9999923670764" y="329.99999508261686"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-933BE26F-19E8-4D39-8457-B27F2D3D95CD" id="BPMNEdge_sid-933BE26F-19E8-4D39-8457-B27F2D3D95CD" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="129.94999949370785" y="177.99999983765576"></omgdi:waypoint>
+        <omgdi:waypoint x="254.99998860049917" y="177.99999848424608"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-CCAD4751-2976-40E8-8956-DC55A880379D" id="BPMNEdge_sid-CCAD4751-2976-40E8-8956-DC55A880379D" flowable:sourceDockerX="75.0" flowable:sourceDockerY="1.0" flowable:targetDockerX="75.0" flowable:targetDockerY="79.00000000000003">
+        <omgdi:waypoint x="329.9999923670764" y="329.99999508261686"></omgdi:waypoint>
+        <omgdi:waypoint x="329.999988632277" y="217.9499979436398"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-A8058533-A0C1-4AC9-A9E0-0247FC7E8294" id="BPMNEdge_sid-A8058533-A0C1-4AC9-A9E0-0247FC7E8294" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="354.9499867398488" y="177.99999729713437"></omgdi:waypoint>
+        <omgdi:waypoint x="479.99999284744274" y="177.9999956802244"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

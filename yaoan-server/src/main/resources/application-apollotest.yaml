@@ -1,0 +1,14 @@
+# Apollo Config
+app:
+  id: ecms-service-agency                            #应用ID
+apollo:
+  cacheDir: /Users/doujiale/Desktop/apollo                      #配置本地配置缓存目录
+  meta: http://120.53.0.50:9080
+  cluster: default                           #指定使用哪个集群的配置
+  autoUpdateInjectedSpringProperties: true   #是否开启 Spring 参数自动更新
+  bootstrap:
+    enabled: true                            #是否开启 Apollo
+    namespaces: application-test.yaml            #设置 Namespace
+    eagerLoad:
+      enabled: true                         #将 Apollo 加载提到初始化日志系统之前
+

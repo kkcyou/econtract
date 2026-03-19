@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yaoan.module.econtract.dal.mysql.demo.EcmsDemoMapper">
+
+    <select id="selectXmlList" resultType="com.yaoan.module.econtract.dal.dataobject.demo.EcmsDemo">
+        SELECT * FROM ecms_demo
+    </select>
+
+</mapper>

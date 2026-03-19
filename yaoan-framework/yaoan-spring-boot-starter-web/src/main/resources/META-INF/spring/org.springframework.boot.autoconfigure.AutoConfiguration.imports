@@ -1,0 +1,6 @@
+com.yaoan.framework.apilog.config.YudaoApiLogAutoConfiguration
+com.yaoan.framework.jackson.config.YudaoJacksonAutoConfiguration
+com.github.xiaoymin.knife4j.spring.configuration.Knife4jAutoConfiguration
+com.yaoan.framework.swagger.config.YudaoSwaggerAutoConfiguration
+com.yaoan.framework.web.config.YudaoWebAutoConfiguration
+com.yaoan.framework.xss.config.YudaoXssAutoConfiguration

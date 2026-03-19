@@ -1,0 +1,344 @@
+spring:
+  application:
+    name: yaoan-server
+  profiles:
+    active: local
+
+
+  main:
+    allow-circular-references: true # 允许循环依赖，因为项目是三层架构，无法避免这个情况。
+
+  # Servlet 配置
+  servlet:
+    # 文件上传相关配置项
+    multipart:
+      max-file-size: 16MB # 单个文件大小
+      max-request-size: 32MB # 设置总上传的文件大小
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER # 解决 SpringFox 与 SpringBoot 2.6.x 不兼容的问题，参见 SpringFoxHandlerProviderBeanPostProcessor 类
+#    throw-exception-if-no-handler-found: true # 404 错误时抛出异常，方便统一处理
+#    static-path-pattern: /static/** # 静态资源路径; 注意：如果不配置，则 throw-exception-if-no-handler-found 不生效！！！ TODO 芋艿：不能配置，会导致 swagger 不生效
+  # Jackson 配置项
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      write-dates-as-timestamps: true # 设置 Date 的格式，使用时间戳
+      write-date-timestamps-as-nanoseconds: false # 设置不使用 nanoseconds 的格式。例如说 1611460870.401，而是直接 1611460870401
+      write-durations-as-timestamps: true # 设置 Duration 的格式，使用时间戳
+      fail-on-empty-beans: false # 允许序列化无属性的 Bean
+    deserialization:
+      ACCEPT_SINGLE_VALUE_AS_ARRAY : true # 允许单值反序列化为数组，例如：{"ids":1} 反序列化为 {"ids":[1]}
+
+  # Cache 配置项
+  cache:
+    type: REDIS
+    redis:
+      time-to-live: 1h # 设置过期时间为 1 小时
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+--- #################### 接口文档配置 ####################
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+# 工作流 Flowable 配置
+flowable:
+  # 1. false: 默认值，Flowable 启动时，对比数据库表中保存的版本，如果不匹配。将抛出异常
+  # 2. true: 启动时会对数据库中所有表进行更新操作，如果表存在，不做处理，反之，自动创建表
+  # 3. create_drop: 启动时自动创建表，关闭时自动删除表
+  # 4. drop_create: 启动时，删除旧表，再创建新表
+  database-schema-update: false # 设置为 false，可通过 https://github.com/flowable/flowable-sql 初始化
+  db-history-used: true # flowable6 默认 true 生成信息表，无需手动设置
+  check-process-definitions: false # 设置为 false，禁用 /resources/processes 自动部署 BPMN XML 流程
+  history-level: full # full：保存历史数据的最高级别，可保存全部流程相关细节，包括流程流转各节点参数
+  use-lock-for-database-schema-update: false
+
+--- #################### 验证码相关配置 ####################
+
+aj:
+  captcha:
+    jigsaw: classpath:images/jigsaw # 滑动验证，底图路径，不配置将使用默认图片；以 classpath: 开头，取 resource 目录下路径
+    pic-click: classpath:images/pic-click # 滑动验证，底图路径，不配置将使用默认图片；以 classpath: 开头，取 resource 目录下路径
+    cache-type: redis # 缓存 local/redis...
+    cache-number: 1000 # local 缓存的阈值,达到这个值，清除缓存
+    timing-clear: 180 # local定时清除过期缓存(单位秒),设置为0代表不执行
+    type: blockPuzzle # 验证码类型 default两种都实例化。 blockPuzzle 滑块拼图 clickWord 文字点选
+    water-mark: HYY源码 # 右下角水印文字(我的水印)，可使用 https://tool.chinaz.com/tools/unicode.aspx 中文转 Unicode，Linux 可能需要转 unicode
+    interference-options: 0 # 滑动干扰项(0/1/2)
+    req-frequency-limit-enable: false # 接口请求次数一分钟限制是否开启 true|false
+    req-get-lock-limit: 5 # 验证失败 5 次，get接口锁定
+    req-get-lock-seconds: 10 # 验证失败后，锁定时间间隔
+    req-get-minute-limit: 30 # get 接口一分钟内请求数限制
+    req-check-minute-limit: 60 # check 接口一分钟内请求数限制
+    req-verify-minute-limit: 60 # verify 接口一分钟内请求数限制
+
+--- #################### 芋道相关配置 ####################
+
+yudao:
+  info:
+    version: 1.0.0
+    base-package: com.yaoan
+  web:
+    admin-ui:
+      url: http://dashboard.yudao.iocoder.cn # Admin 管理后台 UI 的地址
+  security:
+    permit-all_urls:
+      - /admin-api/mp/open/** # 微信公众号开放平台，微信回调接口，不需要登录
+    ignore-urls:
+      - /admin-api/system/auth/check-auth # 文件鉴权接口需指定返回响应码，跳过登录拦截处理
+  websocket:
+    enable: true # websocket的开关
+    path: /websocket/message # 路径
+    maxOnlineCount: 0 # 最大连接人数
+    sessionMap: true # 保存sessionMap
+  swagger:
+    title: 电子合同管理系统
+    description: 电子合同签章管理服务
+    version: ${yudao.info.version}
+    url: ${yudao.web.admin-ui.url}
+    email: xingyu4j@vip.qq.com
+    license: MIT
+    license-url: https://gitee.com/zhijiantianya/ruoyi-vue-pro/blob/master/LICENSE
+  captcha:
+    enable: true # 验证码的开关，默认为 true
+  invitecode:
+    enable: false # 邀请码的开关，默认为 true
+  codegen:
+    base-package: ${yudao.info.base-package}
+    db-schemas: ${spring.datasource.dynamic.datasource.master.name}
+    front-type: 10 # 前端模版的类型，参见 CodegenFrontTypeEnum 枚举类
+  error-code: # 错误码相关配置项
+    constants-class-list:
+      - com.yaoan.module.bpm.enums.ErrorCodeConstants
+      - com.yaoan.module.infra.enums.ErrorCodeConstants
+      - com.yaoan.module.member.enums.ErrorCodeConstants
+      - com.yaoan.module.pay.enums.ErrorCodeConstants
+      - com.yaoan.module.system.enums.ErrorCodeConstants
+      - com.yaoan.module.mp.enums.ErrorCodeConstants
+  mq:
+    redis:
+      pubsub:
+        enable: false # 是否开启 Redis pubsub 广播消费，默认为 true。这里设置成 false，可以按需开启
+      stream:
+        enable: false  # 是否开启 Redis stream 集群消费，默认为 true。这里设置成 false，可以按需开启
+  tenant: # 多租户相关配置项
+    enable: true
+    ignore-urls:
+      - /admin-api/system/auth/login
+      - /admin-api/econtract/foxi/**
+      - /admin-api/econtract/design/callback #畅写回调的接口忽略租户
+      - /admin-api/econtract/xml/getContractStructuredInfo #畅写回调的接口忽略租户
+      - /admin-api/ecms/compare/getAll #检测项
+      - /system/mongolia/region/** #区划的接口忽略租户
+      - /admin-api/system/tenant/get-id-by-name # 基于名字获取租户，不许带租户编号
+      - /admin-api/system/tenant/get-by-website # 基于域名获取租户，不许带租户编号
+      - /admin-api/system/captcha/get # 获取图片验证码，和租户无关
+      - /admin-api/system/captcha/**
+      - /admin-api/system/captcha/check # 校验图片验证码，和租户无关
+      - /admin-api/infra/file/*/get/** # 获取图片，和租户无关
+      - /admin-api/system/sms/callback/* # 短信回调接口，无法带上租户编号
+      - /admin-api/pay/notify/** # 支付回调通知，不携带租户编号
+      - /jmreport/* # 积木报表，无法携带租户编号
+      - /admin-api/mp/open/** # 微信公众号开放平台，微信回调接口，无法携带租户编号
+      - /admin-api/econtract/sign/pdf # 签章忽略租户
+      - /admin-api/econtract/wps/** # WPS忽略租户
+      - /admin-api/econtract/purchasing/** # 对接系统忽略租户
+      - /admin-api/system/oauth2-client/access/code
+      - /admin-api/system/auth/extend/refresh-token
+      - /admin-api/system/oauth2/token
+      - /admin-api/system/auth/prevention/login
+      - /admin-api/system/config/getConfigTitle
+      - /admin-api/ecms/rel-checklist-rule/getContractCheckListByCheckListIds
+      - /admin-api/ecms/rel-checklist-rule/getReviewRulesByCheckListIds
+      - /admin-api/upload/check-file
+      - /admin-api/upload/breakpoint-upload
+      - /admin-api/upload/add
+      - /admin-api/system/auth/check-auth
+
+    ignore-tables:
+#      - ecms_demo
+      - ecms_gpx_project
+      - ecms_gpx_package
+      - ecms_gpx_package_detail
+      - ecms_gpx_batch_plan
+      - ecms_gpx_bid_confirm_quotation_detail
+      - ecms_gpx_contract_quotation_rel
+      - ecms_gpx_package_detail_param
+      - ecms_gpx_plan
+      - ecms_gpx_plan_detail
+      - ecms_gpx_supplier
+      - ecms_gpx_supplier_combination
+#      - ecms_model
+      - ecms_model_category
+      - ecms_model_category_bak
+      - ecms_contract_xml_config
+      - ecms_contract_term
+      - ecms_client_model_category
+      - ecms_code_rule
+      - ecms_code_rule_info
+      - ecms_relative
+      - ecms_gcy_electronic_mall_order
+      - ecms_gcy_project
+      - ecms_gcy_goods
+      - ecms_gcy_associated_plan
+      - ecms_goods_pur_catalog
+      - ecms_param
+      - ecms_param_category
+      - ecms_model_client
+      - system_org
+      - system_supply
+      - system_tenant
+      - bpm_category
+      - bpm_process_expression
+      - bpm_process_definition_info
+      - system_tenant_package
+      - system_dict_data
+      - system_dict_type
+      - system_invite_code
+      - system_econtract_org
+      - system_error_code
+      - system_menu
+      - system_sms_channel
+      - system_sms_template
+      - system_sms_log
+      - system_sms_code
+      - system_sensitive_word
+      - system_oauth2_client
+      - system_mail_account
+      - system_mail_template
+      - system_mail_log
+      - system_notify_template
+      - infra_codegen_column
+      - infra_codegen_table
+      - infra_test_demo
+      - infra_config
+      - infra_file_config
+      - infra_file
+      - infra_file_content
+      - infra_job
+      - infra_job_log
+      - infra_job_log
+      - infra_data_source_config
+      - act_evt_log
+      - act_ge_bytearray
+      - act_ge_property
+      - act_hi_actinst
+      - act_hi_attachment
+      - act_hi_comment
+      - act_hi_detail
+      - act_hi_entitylink
+      - act_hi_identitylink
+      - act_hi_procinst
+      - act_hi_taskinst
+      - act_hi_tsk_log
+      - act_hi_varinst
+      - act_id_bytearray
+      - act_id_group
+      - act_id_info
+      - act_id_membership
+      - act_id_priv
+      - act_id_priv_mapping
+      - act_id_property
+      - act_id_token
+      - act_id_user
+      - act_procdef_info
+      - act_re_deployment
+      - act_re_model
+      - act_re_procdef
+      - act_ru_actinst
+      - act_ru_deadletter_job
+      - act_ru_entitylink
+      - act_ru_event_subscr
+      - act_ru_execution
+      - act_ru_external_job
+      - act_ru_history_job
+      - act_ru_identitylink
+      - act_ru_job
+      - act_ru_suspended_job
+      - act_ru_task
+      - act_ru_timer_job
+      - act_ru_variable
+#      - bpm_form
+#      - bpm_oa_leave
+#      - bpm_process_definition_ext
+#      - bpm_process_instance_ext
+#      - bpm_task_assign_rule
+#      - bpm_task_ext
+#      - bpm_user_group
+      - flw_channel_definition
+      - flw_ev_databasechangelog
+      - flw_ev_databasechangeloglock
+      - flw_event_definition
+      - flw_event_deployment
+      - flw_event_resource
+      - flw_ru_batch
+      - flw_ru_batch_part
+      - qrtz_blob_triggers
+      - qrtz_calendars
+      - qrtz_cron_triggers
+      - qrtz_fired_triggers
+      - qrtz_job_details
+      - qrtz_locks
+      - qrtz_paused_trigger_grps
+      - qrtz_scheduler_state
+      - qrtz_simple_triggers
+      - qrtz_simprop_triggers
+      - qrtz_triggers
+      - ecms_project_purchasing
+      - ecms_jianguan_pur_catalog
+      - project_purchasing
+      - t_region
+      - ecms_systemuser_rel
+      - ecms_element
+      - ecms_term
+      - ecms_terms_category
+      - ecms_contract_template
+      - ecms_contract_template_term_rel
+      - ecms_contract_template_category
+      - ecms_workbench
+      - ecms_workday
+      - ecms_contract_signet_specs
+      - ecms_warning_monitor
+      - ecms_warning_param
+      - ecms_warning_model
+
+  sms-code: # 短信验证码相关的配置项
+    expire-times: 10m
+    send-frequency: 1m
+    send-maximum-quantity-per-day: 10
+    begin-code: 9999 # 这里配置 9999 的原因是，测试方便。
+    end-code: 9999 # 这里配置 9999 的原因是，测试方便。
+  trade:
+    order:
+      app-id: 1 # 商户编号
+      expire-time: 2h # 支付的过期时间
+
+debug: false
+
+#积木报表配置
+minidao :
+  base-package: org.jeecg.modules.jmreport.desreport.dao*
+  db-type: mysql
+
+#初始用户密码（登录时，会与此密码进行比较）
+user-config:
+  init_user_password: 123456789
+
+company-admin-roleId: 147
+
+validate:
+    license: 323032352d31322d33302c32fdb5eb894793c3c9fa3de3298fdff889

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.8.0">
+  <process id="ecms_contract_confirm_sign_both" name="电子签约双方合同确认签章流程" isExecutable="true">
+    <documentation>电子签约双方合同确认签章流程</documentation>
+    <startEvent id="start" name="合同确认开始" flowable:formFieldValidation="true"></startEvent>
+    <userTask id="confirm01" name="相对方确认" flowable:assignee="assign1" flowable:formFieldValidation="true">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <userTask id="confirm02" name="发送方确认" flowable:assignee="assign0" flowable:formFieldValidation="true">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <userTask id="sign01" name="主体签署" flowable:assignee="assign2" flowable:formFieldValidation="true">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <userTask id="sign02" name="主体签署01" flowable:assignee="assign3" flowable:formFieldValidation="true">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <endEvent id="sid-09BEE328-E68D-4E28-B10D-4C51D3FE8626"></endEvent>
+    <sequenceFlow id="reject4" name="拒签" sourceRef="sign02" targetRef="sign01">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passVal=='reject'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="reject3" name="退回" sourceRef="sign01" targetRef="confirm02">
+      <extensionElements>
+        <flowable:executionListener event="start" class="com.yaoan.module.bpm.service.task.listener.sign.SignBackExecuteListener"></flowable:executionListener>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passVal=='reject'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="reject2" name="退回" sourceRef="confirm02" targetRef="confirm01">
+      <extensionElements>
+        <flowable:executionListener event="start" class="com.yaoan.module.bpm.service.task.listener.ConfirmBackExecuteListener"></flowable:executionListener>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passVal=='reject'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="send" name="发送" sourceRef="confirm02" targetRef="confirm01">
+      <extensionElements>
+        <flowable:executionListener event="start" class="com.yaoan.module.bpm.service.task.listener.SendExecuteListener"></flowable:executionListener>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passVal=='send'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="confirm1" name="确认" sourceRef="confirm01" targetRef="confirm02">
+      <extensionElements>
+        <flowable:executionListener event="start" class="com.yaoan.module.bpm.service.task.listener.ToBeConfirmExecuteListener"></flowable:executionListener>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passVal=='confirm'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="reject1" name="退回" sourceRef="confirm01" targetRef="confirm02">
+      <extensionElements>
+        <flowable:executionListener event="start" class="com.yaoan.module.bpm.service.task.listener.BackExecuteListener"></flowable:executionListener>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passVal=='reject'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="start_event" sourceRef="start" targetRef="confirm01"></sequenceFlow>
+    <sequenceFlow id="confirmdone" name="确认可签署" sourceRef="confirm02" targetRef="sign01">
+      <extensionElements>
+        <flowable:executionListener event="start" class="com.yaoan.module.bpm.service.task.listener.ConfirmExecuteListener"></flowable:executionListener>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passVal=='confirm'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="confirm3" name="确认" sourceRef="sign01" targetRef="sign02">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passVal=='confirm'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="signdone" name="合同签署完成" sourceRef="sign02" targetRef="sid-09BEE328-E68D-4E28-B10D-4C51D3FE8626">
+      <extensionElements>
+        <flowable:executionListener event="start" class="com.yaoan.module.bpm.service.task.listener.sign.SignConfirmExecuteListener"></flowable:executionListener>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passVal=='confirm'}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ecms_contract_confirm_sign_both">
+    <bpmndi:BPMNPlane bpmnElement="ecms_contract_confirm_sign_both" id="BPMNPlane_ecms_contract_confirm_sign_both">
+      <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
+        <omgdc:Bounds height="30.0" width="30.0" x="135.0" y="150.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="confirm01" id="BPMNShape_confirm01">
+        <omgdc:Bounds height="80.0" width="100.0" x="315.0" y="125.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="confirm02" id="BPMNShape_confirm02">
+        <omgdc:Bounds height="80.0" width="100.0" x="645.0" y="125.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sign01" id="BPMNShape_sign01">
+        <omgdc:Bounds height="80.0" width="100.0" x="645.0" y="420.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sign02" id="BPMNShape_sign02">
+        <omgdc:Bounds height="80.0" width="100.0" x="960.0" y="420.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-09BEE328-E68D-4E28-B10D-4C51D3FE8626" id="BPMNShape_sid-09BEE328-E68D-4E28-B10D-4C51D3FE8626">
+        <omgdc:Bounds height="28.0" width="28.0" x="996.0" y="645.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="reject4" id="BPMNEdge_reject4" flowable:sourceDockerX="1.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="99.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="960.0" y="440.0"></omgdi:waypoint>
+        <omgdi:waypoint x="744.9499999999999" y="440.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="start_event" id="BPMNEdge_start_event" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="164.94999960454757" y="165.0"></omgdi:waypoint>
+        <omgdi:waypoint x="314.9999999999028" y="165.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="reject3" id="BPMNEdge_reject3" flowable:sourceDockerX="75.0" flowable:sourceDockerY="1.0" flowable:targetDockerX="75.0" flowable:targetDockerY="79.0">
+        <omgdi:waypoint x="720.0" y="420.0"></omgdi:waypoint>
+        <omgdi:waypoint x="720.0" y="204.95"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="reject2" id="BPMNEdge_reject2" flowable:sourceDockerX="25.0" flowable:sourceDockerY="79.0" flowable:targetDockerX="50.0" flowable:targetDockerY="79.0">
+        <omgdi:waypoint x="670.0" y="204.95"></omgdi:waypoint>
+        <omgdi:waypoint x="670.0" y="269.0"></omgdi:waypoint>
+        <omgdi:waypoint x="365.0" y="269.0"></omgdi:waypoint>
+        <omgdi:waypoint x="365.0" y="204.95"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="reject1" id="BPMNEdge_reject1" flowable:sourceDockerX="84.880859375" flowable:sourceDockerY="40.0" flowable:targetDockerX="9.5" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="414.9499999998788" y="165.0"></omgdi:waypoint>
+        <omgdi:waypoint x="644.9999999999591" y="165.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="confirm3" id="BPMNEdge_confirm3" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="744.9499999999999" y="460.0"></omgdi:waypoint>
+        <omgdi:waypoint x="959.9999999996455" y="460.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="confirm1" id="BPMNEdge_confirm1" flowable:sourceDockerX="50.0" flowable:sourceDockerY="1.0" flowable:targetDockerX="25.0" flowable:targetDockerY="1.0">
+        <omgdi:waypoint x="365.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="365.0" y="71.0"></omgdi:waypoint>
+        <omgdi:waypoint x="670.0" y="71.0"></omgdi:waypoint>
+        <omgdi:waypoint x="670.0" y="125.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="signdone" id="BPMNEdge_signdone" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="1010.0" y="499.95000000000005"></omgdi:waypoint>
+        <omgdi:waypoint x="1010.0" y="645.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="confirmdone" id="BPMNEdge_confirmdone" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="695.0" y="204.95"></omgdi:waypoint>
+        <omgdi:waypoint x="695.0" y="420.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="send" id="BPMNEdge_send" flowable:sourceDockerX="11.0" flowable:sourceDockerY="60.0" flowable:targetDockerX="84.84765625" flowable:targetDockerY="60.0">
+        <omgdi:waypoint x="644.9999999999728" y="185.0"></omgdi:waypoint>
+        <omgdi:waypoint x="414.9499999999507" y="185.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

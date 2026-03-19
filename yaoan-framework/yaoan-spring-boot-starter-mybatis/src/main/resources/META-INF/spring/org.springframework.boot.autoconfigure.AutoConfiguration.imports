@@ -1,0 +1,2 @@
+com.yaoan.framework.datasource.config.YudaoDataSourceAutoConfiguration
+com.yaoan.framework.mybatis.config.YudaoMybatisAutoConfiguration

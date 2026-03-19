@@ -1,0 +1,144 @@
+
+package com.yaoan.module.econtract.service.contract.com.cxf.client;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
+
+/**
+ * <p>CheckFileForOnInternet complex type�� Java �ࡣ
+ * 
+ * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
+ * 
+ * <pre>
+ * &lt;complexType name="CheckFileForOnInternet"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="CaseID" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" form="qualified"/&gt;
+ *         &lt;element name="DocumentData" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" form="qualified"/&gt;
+ *         &lt;element name="StaffCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" form="qualified"/&gt;
+ *         &lt;element name="RoleId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" form="qualified"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "CheckFileForOnInternet1", propOrder = {
+    "caseID",
+    "documentData",
+    "staffCode",
+    "roleId"
+})
+public class CheckFileForOnInternet {
+
+    @XmlElement(name = "CaseID")
+    protected String caseID;
+    @XmlElement(name = "DocumentData")
+    protected byte[] documentData;
+    @XmlElement(name = "StaffCode")
+    protected String staffCode;
+    @XmlElement(name = "RoleId")
+    protected String roleId;
+
+    /**
+     * ��ȡcaseID���Ե�ֵ��
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCaseID() {
+        return caseID;
+    }
+
+    /**
+     * ����caseID���Ե�ֵ��
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCaseID(String value) {
+        this.caseID = value;
+    }
+
+    /**
+     * ��ȡdocumentData���Ե�ֵ��
+     * 
+     * @return
+     *     possible object is
+     *     byte[]
+     */
+    public byte[] getDocumentData() {
+        return documentData;
+    }
+
+    /**
+     * ����documentData���Ե�ֵ��
+     * 
+     * @param value
+     *     allowed object is
+     *     byte[]
+     */
+    public void setDocumentData(byte[] value) {
+        this.documentData = value;
+    }
+
+    /**
+     * ��ȡstaffCode���Ե�ֵ��
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getStaffCode() {
+        return staffCode;
+    }
+
+    /**
+     * ����staffCode���Ե�ֵ��
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setStaffCode(String value) {
+        this.staffCode = value;
+    }
+
+    /**
+     * ��ȡroleId���Ե�ֵ��
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getRoleId() {
+        return roleId;
+    }
+
+    /**
+     * ����roleId���Ե�ֵ��
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setRoleId(String value) {
+        this.roleId = value;
+    }
+
+}

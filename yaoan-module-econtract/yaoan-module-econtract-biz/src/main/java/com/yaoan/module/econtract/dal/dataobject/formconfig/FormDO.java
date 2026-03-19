@@ -1,0 +1,66 @@
+package com.yaoan.module.econtract.dal.dataobject.formconfig;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.yaoan.framework.tenant.core.db.DeptBaseDO;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+/**
+ * @description:
+ * @author: Pele
+ * @date: 2024/3/18 19:12
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@TableName("ecms_form")
+public class FormDO extends DeptBaseDO {
+
+    private static final long serialVersionUID = 2379558901330501098L;
+    /**
+     * 主键
+     */
+    @TableId(value = "id", type = IdType.ASSIGN_UUID)
+    private String id;
+
+    /**
+     * 表单编号
+     */
+    @TableField("code")
+    private String code;
+
+    /**
+     * 表单名称
+     */
+    @TableField("name")
+    private String name;
+
+    /**
+     * 表单分类
+     */
+    @TableField("form_category")
+    private String formCategory;
+
+    /**
+     * 表单类型
+     */
+    @TableField("form_type")
+    private String formType;
+
+    /**
+     * 状态 0=停用 1=启用
+     */
+    @TableField("status")
+    private String status;
+
+    /**
+     * 备注
+     */
+    @TableField("remark")
+    private String remark;
+
+
+
+}
